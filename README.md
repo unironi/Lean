@@ -1,1 +1,1 @@
-# Lean
+# Proof Formalization with Lean
