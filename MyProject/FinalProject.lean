@@ -37,7 +37,9 @@ structure Variety (k: Type*) [CommSemiring k] (σ : Type*) where
   (is_variety: ∀ U₁ U₂ : Set (σ → k), Irreducible carrier U₁ U₂)
   (dimension : ℕ)
 
-def Reducible (X: AlgebraicSet k σ) := ∃ Y₁ Y₂: Variety k σ, X.carrier = Y₁.carrier ∪ Y₂.carrier
+/- A reducible algebraic set consists of a union of varieties -/
+   -- Y₁ and Y₂ could be further reducible
+def Reducible (X: AlgebraicSet k σ) := ∃ Y₁ Y₂: AlgebraicSet k σ, Y₁.carrier ≠ X.carrier ∧ Y₂.carrier ≠ X.carrier ∧ X.carrier = Y₁.carrier ∪ Y₂.carrier
 
 --def Dim (X: AlgSet) := Algebra.Transcendental (Mv_Polynomial X k) k
 
