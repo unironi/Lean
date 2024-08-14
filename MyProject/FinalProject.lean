@@ -4,8 +4,6 @@ Show that every irreducible component of V (I) has dimension ≥ n − r.
 
 import Mathlib.Algebra.MvPolynomial.Basic
 import Mathlib.RingTheory.Algebraic
-import Mathlib.Algebra.BigOperators.Group.Finset
-
 
 namespace Mv_Polynomial
 
