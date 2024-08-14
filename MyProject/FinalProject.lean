@@ -83,7 +83,7 @@ Show that every irreducible component of V (I) has dimension ≥ n − r.
 -/
 
 -- need to revise the arguments to this
-theorem IrredDim (I: Set (MvPolynomial σ k)) (W: Variety A) (r: ℕ) (n: ℕ) : W.dimension ≥ n - r := by
+theorem IrredDim (I: Set (MvPolynomial r k)) (W: Variety A) {r: ℕ} {n: ℕ} : W.dimension ≥ n - r := by
   sorry
   /- induction on r using d:
   if d = 1:
