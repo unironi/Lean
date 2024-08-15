@@ -41,6 +41,8 @@ structure Variety (k: Type*) [CommSemiring k] (σ : Type*) where
    -- Y₁ and Y₂ could be further reducible
 def Reducible (X: AlgebraicSet k σ) := ∃ Y₁ Y₂: AlgebraicSet k σ, Y₁.carrier ≠ X.carrier ∧ Y₂.carrier ≠ X.carrier ∧ X.carrier = Y₁.carrier ∪ Y₂.carrier
 
+def SetsOfReducible (X: AlgebraicSet k σ) := X.carrier = Set (Set (σ → k))
+
 --def Dim (X: AlgSet) := Algebra.Transcendental (Mv_Polynomial X k) k
 
 /- If Y is a subvariety of X, then the codimension of Y in X is dim X - dim Y -/
@@ -124,11 +126,11 @@ Show that every irreducible component of V (I) has dimension ≥ n − r.
 -- so we will split up the theorem into two, one considering r = 1 and the other assuming the inductive step
 
 theorem rIsOne (I: Set (MvPolynomial d k)) (d_is_one: d = 1) (V: AlgebraicSet k σ) (V_reducible: Reducible V) :
-∀ v : Variety ∈ V, v.dimension ≥ n - 1 := by
+∀ v ∈ V.carrier, v.dimension ≥ n - 1 := by
 sorry
 
 -- want this to be true for any variety of I, so i need something that can split V(I) into irreducible components
 -- and we can just take one of those components to prove in generality
 theorem IrredDim (I: Set (MvPolynomial d k)) (hd: d = r - 1) (V: AlgebraicSet k σ) (V_reducible: Reducible V) :
-∀ v : Variety ∈ V, v.dimension ≥ n - r := by
+∀ v ∈ V.carrier, v.dimension ≥ n - r := by
 sorry
