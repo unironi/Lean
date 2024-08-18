@@ -4,6 +4,8 @@ Show that every irreducible component of V (I) has dimension ≥ n − r.
 
 import Mathlib.Algebra.MvPolynomial.Basic
 import Mathlib.RingTheory.Algebraic
+import Mathlib.Algebra.BigOperators.Group.Finset
+
 
 namespace Mv_Polynomial
 
@@ -17,12 +19,12 @@ def ZeroOf (S: Set (MvPolynomial σ k)) : Set (σ → k) := {x : (σ → k) | �
 def IdealOf (X: Set (σ → k)) : Set (MvPolynomial σ k) := {f: MvPolynomial σ k | ∀ x ∈ X, (MvPolynomial.eval x) f = 0}
 
 /- Here the underlying set is a subset of kⁿ -/
-structure AlgebraicSet (k: Type*) [CommSemiring k] (σ : Type*) where
+/-structure AlgebraicSet (k: Type*) [CommSemiring k] (σ : Type*) where
   -- (carrier: ZeroOf S)
   (carrier: Set (σ → k))
-  (ideal_exists: ∃ S : Set (MvPolynomial σ k), carrier = ZeroOf S)
+  (ideal_exists: ∃ S : Set (MvPolynomial σ k), carrier = ZeroOf S)-/
 
-/- Underlying set is a subset of kⁿ-/
+/- Underlying set is a subset of k[x₁, ... xₙ]-/
 structure IdealOfAlgebraicSet (k: Type*) [CommSemiring k] (σ : Type*) where
   (carrier: Set (MvPolynomial σ k))
   (algebraic_exists: ∃ X : Set (σ → k), carrier = IdealOf X)
@@ -35,20 +37,26 @@ field k(V) over k; here I am just defining it as a number ≥ 0 -/
 structure Variety (k: Type*) [CommSemiring k] (σ : Type*) where
   (carrier: Set (σ → k))
   (is_variety: ∀ U₁ U₂ : Set (σ → k), Irreducible carrier U₁ U₂)
+  (ideal_exists: ∃ S : Set (MvPolynomial σ k), carrier = ZeroOf S)
   (dimension : ℕ)
+
+variable (V: Variety k σ) (SetOfVarieties: Set V.carrier)
+
+def AlgebraicSet := Set.sUnion (Set (V.carrier))
+
+-- Want to express an algebraic set as a union of varieties
+-- but also be able to say something like ∀ varieties ∈ algebraic set
 
 /- A reducible algebraic set consists of a union of varieties -/
    -- Y₁ and Y₂ could be further reducible
-def Reducible (X: AlgebraicSet k σ) := ∃ Y₁ Y₂: AlgebraicSet k σ, Y₁.carrier ≠ X.carrier ∧ Y₂.carrier ≠ X.carrier ∧ X.carrier = Y₁.carrier ∪ Y₂.carrier
+--def Reducible (X: AlgebraicSet k σ) := ∃ Y₁ Y₂: AlgebraicSet k σ, Y₁.carrier ≠ X.carrier ∧ Y₂.carrier ≠ X.carrier ∧ X.carrier = Y₁.carrier ∪ Y₂.carrier
 
-def SetsOfReducible (X: AlgebraicSet k σ) := X.carrier = Set (Set (σ → k))
-
---def Dim (X: AlgSet) := Algebra.Transcendental (Mv_Polynomial X k) k
+--def SetsOfReducible (X: AlgebraicSet k σ) := X.carrier = Set (Variety k σ)
 
 /- If Y is a subvariety of X, then the codimension of Y in X is dim X - dim Y -/
 -- def Codim (X: Variety A) (Y: Variety A) (Y_sub_X: Y.carrier ⊆ X.carrier) := X.dimension - Y.dimension
 
-variable (A : AlgebraicSet k σ) (S: Set (MvPolynomial σ k)) (VS: ZeroOf S)
+--variable (A : AlgebraicSet (SetOfVarieties)) (S: Set (MvPolynomial σ k)) (VS: ZeroOf S)
 
 
 /- Next two theorems are to help prove the main problem -/
@@ -87,7 +95,7 @@ Then g ∈ I(X) = ⟨f⟩, so f | g and xn appears in the expression for g, a co
 Therefore dim X ≥ n − 1, and Theorem 2.5.3 implies that dim X = n − 1, so codim X = 1.
 -/
 
-theorem IrredCodim1 (f: MvPolynomial σ k) (Vf: Variety A) (kn: Variety A) (h: Vf.carrier ⊆ kn.carrier): kn.dimension - Vf.dimension = 1 := by
+theorem IrredCodim1 (f: MvPolynomial σ k) (Vf: Variety k σ) (kn: Variety k σ) (h: Vf.carrier ⊆ kn.carrier): kn.dimension - Vf.dimension = 1 := by
   sorry
 
 /-
@@ -125,12 +133,17 @@ Show that every irreducible component of V (I) has dimension ≥ n − r.
 -- Using the induction tactic will not work in this case since induction sets the base case to zero,
 -- so we will split up the theorem into two, one considering r = 1 and the other assuming the inductive step
 
-theorem rIsOne (I: Set (MvPolynomial d k)) (d_is_one: d = 1) (V: AlgebraicSet k σ) (V_reducible: Reducible V) :
-∀ v ∈ V.carrier, v.dimension ≥ n - 1 := by
+-- I is an ideal of polynomial rink
+-- V(I) is the algebraic
+-- to reference the irreducible component of an algebraic set
+
+
+theorem rIsOne (I: Set (MvPolynomial 1 k)) (V: AlgebraicSet) :
+∀ v ⊆ V, v.dimension ≥ n - 1 := by
 sorry
 
 -- want this to be true for any variety of I, so i need something that can split V(I) into irreducible components
 -- and we can just take one of those components to prove in generality
-theorem IrredDim (I: Set (MvPolynomial d k)) (hd: d = r - 1) (V: AlgebraicSet k σ) (V_reducible: Reducible V) :
-∀ v ∈ V.carrier, v.dimension ≥ n - r := by
+theorem IrredDim (I: Set (MvPolynomial d k)) (hd: d = r - 1) (V: AlgebraicSet):
+∀ v ⊆ V, v.dimension ≥ n - r := by
 sorry
