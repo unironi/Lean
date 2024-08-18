@@ -234,23 +234,24 @@ theorem WOSet.eq_iff : W = W' ↔ W.S ⊆ W'.S ∧ ∀ x y, W'.le x y → W.le x
   ext x y
   · constructor
     · exact mem_of_subset_of_mem hss
-
-    by_cases hxyW' : W'.le x y
-    · obtain hxyW := h x y hxyW'
-      intro hxW'
-      exact hxyW.mem_left
-    sorry--apply hxyW'
-    --rw [← W'.lt_iff_not_le] at hxyW'
-    --intro hxW'
-    --have hxyW: W'.le y x := hxyW'.le
-
-    --simp [le.mem_left] at hxy
-    --apply hxy.1.le.mem_left
-    --intro hxW
-    --obtain ha := h x y
-    --apply h x y WOSet.le.mem_left
+    intro hxW'
+    have hxx: x ∈ W'.S → W'.le x x := by exact W'.refl x
+    exact (h x x (hxx hxW')).mem_left
   constructor
-  · sorry
+  · intro hW
+    have hxW' : x ∈ W'.S := by exact mem_of_subset_of_mem hss hW.mem_left
+    have hyW' : y ∈ W'.S := by exact mem_of_subset_of_mem hss hW.mem_right
+    obtain hOR := le_or_lt hxW' hyW'
+    rcases hOR with h₁ | h₂
+    · exact h₁
+    obtain hWyx := h y x h₂.le
+    have hW_not : W.lt y x := by
+      unfold lt
+      constructor
+      · apply hWyx
+      apply h₂.ne
+    rw[lt_iff_not_le hW.mem_right hW.mem_left] at hW_not
+    contradiction
   exact h x y
 
 end WOSet
