@@ -40,7 +40,7 @@ structure Variety (k: Type*) [CommSemiring k] (σ : Type*) where
   (ideal_exists: ∃ S : Set (MvPolynomial σ k), carrier = ZeroOf S)
   (dimension : ℕ)
 
-variable (V: Variety k σ) (SetOfVarieties: Set (Set (σ → k)))
+variable (V: Variety k σ) (SetOfVarieties: Set (Set (σ → k))) -- lean does not like Set (Variety k σ)
 
 def AlgebraicSets : Set (σ → k) := Set.sUnion SetOfVarieties
 
@@ -140,13 +140,13 @@ Show that every irreducible component of V (I) has dimension ≥ n − r.
 
 variable (SS: Set (Set (σ → k)))
 
-theorem rIsOne (I: Set (MvPolynomial Unit k)) (V: AlgebraicSets SS) : ∀ v ⊆ V, v.dimension ≥ n - 1 := by
+theorem rIsOne (I: Set (MvPolynomial Unit k)) (V: AlgebraicSets SS) (W: Variety k σ) (h: W ⊆ V) : W.dimension ≥ n - 1 := by
 sorry
 
 -- want this to be true for any variety of I, so i need something that can split V(I) into irreducible components
 -- and we can just take one of those components to prove in generality
-theorem IrredDim (I: Set (MvPolynomial d k)) (hd: d = r - 1) (V: AlgebraicSets):
-∀ v ⊆ V, v.dimension ≥ n - r := by
+theorem IrredDim (I: Set (MvPolynomial r k)) (V: AlgebraicSets SS) (W: Variety k σ) (h: W ⊆ V):
+W.dimension ≥ n - r := by
 sorry
 
 --theorem ugh (I: Set (MvPolynomial σ k))
