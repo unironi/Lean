@@ -331,8 +331,7 @@ theorem IsInitialSegment.ssubset (h : IsInitialSegment W W') : W.S ⊂ W'.S := b
   -- h': all elements in W are less than x' so x' is not in W
   rw[h']
   unfold WOSet.lt
-
-  sorry
+  simp
 
 theorem IsInitialSegment.irrefl (W : WOSet α) : ¬ IsInitialSegment W W := by
   intro h
