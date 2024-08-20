@@ -293,22 +293,45 @@ theorem IsInitialSegment.eq_setOf_lt (h : IsInitialSegment W W') :
 
 theorem IsInitialSegment.le_iff_le (h : IsInitialSegment W W') (hy : y ∈ W.S) :
     W.le x y ↔ W'.le x y := by
+    constructor
+    · exact h.le_of_le
+    obtain ⟨x', hxW', h₂⟩ := h.eq_setOf_lt
+    intro hW'
+    -- we know y ∈ W
+    -- we know x ≤ y in W'
+    -- we know there is an x' ∈ W' where W = {y | y < x' in W'}
+    -- want to show that x ≤ y in W
+    sorry
+
   -- this takes a bit of thought. You'll need to use `h.eq_setOf_lt`.
-  sorry
 
 theorem IsInitialSegment.lt_iff_lt (h : IsInitialSegment W W') (hy : y ∈ W.S) :
     W.lt x y ↔ W'.lt x y := by
   -- this is easier - use the definition of `WOSet.lt` and the previous lemma.
-  sorry
+  unfold WOSet.lt
+  simp
+  intro
+  exact h.le_iff_le hy
 
 theorem IsInitialSegment.lt_of_lt (h : IsInitialSegment W W') (hxy : W.lt x y) : W'.lt x y := by
   rwa [← h.lt_iff_lt hxy.le.mem_right]
 
 theorem IsInitialSegment.subset (h : IsInitialSegment W W') : W.S ⊆ W'.S := by
-  sorry
+  intro x hxW
+  obtain ⟨h', _⟩ := h
+  have hxx: x ∈ W.S → W.le x x := by exact W.refl x
+  exact (h' x x (hxx hxW)).mem_left
 
 theorem IsInitialSegment.ssubset (h : IsInitialSegment W W') : W.S ⊂ W'.S := by
   rw [ssubset_iff_of_subset h.subset]
+  obtain ⟨x', hx'W', h'⟩ := h.eq_setOf_lt
+  use x'
+  constructor
+  · exact hx'W'
+  -- h': all elements in W are less than x' so x' is not in W
+  rw[h']
+  unfold WOSet.lt
+
   sorry
 
 theorem IsInitialSegment.irrefl (W : WOSet α) : ¬ IsInitialSegment W W := by
@@ -319,7 +342,13 @@ theorem IsInitialSegment.trans {W₁ W₂ W₃ : WOSet α} (h : IsInitialSegment
     (h' : IsInitialSegment W₂ W₃) : IsInitialSegment W₁ W₃ := by
   obtain ⟨x₂, hx₂, hW₁⟩ := h.eq_setOf_lt
   constructor
-  · sorry
+  · intro u v hW₁_le
+    sorry
+  use x₂
+  constructor
+  · have hxx: x₂ ∈ W₂.S → W₂.le x₂ x₂ := by exact W₂.refl x₂
+    obtain ⟨h', _⟩ := h'
+    exact (h' x₂ x₂ (hxx hx₂)).mem_left
   sorry
 
 /-- This shows that the 'initial segment or equal' relation is a partial order, which
@@ -332,16 +361,21 @@ instance (α : Type*) : PartialOrder (WOSet α) where
     -- to automatically do the substitutions without having to `rw`.
     -- the line below does this with two hypotheses at once, splitting into four cases.
     rintro W₁ W₂ W₃ (rfl | h) (rfl | h')
-    · sorry
-    · sorry
-    · sorry
-    sorry
+    · tauto
+    · tauto
+    · tauto
+    obtain h'' := IsInitialSegment.trans h h'
+    tauto
   le_antisymm := by
     rintro W W' (rfl | h)
     · simp
     rintro (rfl | h')
     · rfl
-    sorry
+    rw[WOSet.eq_iff]
+    constructor
+    · exact h.subset
+    intro x y hxyW'
+    exact h'.le_of_le hxyW'
 
 /-
 Now we are done with (1). But let's write some more lemmas so it is easy to interact with
